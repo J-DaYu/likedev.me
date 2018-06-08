@@ -42,14 +42,14 @@ deploy.post('/web', (ctx, next) => {
     ctx.body = `signature 不匹配: ${signature}`;
   } else {
     let web = require('./deploy/web');
-    ctx.body = web();
+    ctx.body = '命令执行中...';
   }
 });
 
 // router
 let router = Router().loadMethods();
 router.get('*', (ctx, next) => {
-  ctx.body = 'Hello Koa2!';
+  ctx.body = fs.readFileSync('./web/source/dist/index.html', 'utf-8');
 });
 
 app.use(staticServer('./web/docs'), 'docs');

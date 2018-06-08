@@ -52,7 +52,7 @@ router.get('*', (ctx, next) => {
   ctx.body = 'Hello Koa2!';
 });
 
-// app.use(staticServer('./web/source/dist'));
+app.use(staticServer('./web/source/dist'));
 app.use(router.middleware());
 app.use(deploy.middleware());
 

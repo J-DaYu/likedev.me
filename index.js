@@ -44,8 +44,15 @@ deploy.post('/doc', (ctx, next) => {
   }
 });
 deploy.post('/web', (ctx, next) => {
-  let web = require('./deploy/doc');
-  ctx.body = web();
+  let signature = ctx.headers['x-hub-signature'];
+  if (!signature) {
+    ctx.body = 'x-hub-signature 必须传入';
+  } else if (!verify(signature, ctx.request.rawBody)) {
+    ctx.body = `signature 不匹配: ${signature}`;
+  } else {
+    let web = require('./deploy/web');
+    ctx.body = web();
+  }
 });
 deploy.get('/test', (ctx, next) => {
   //

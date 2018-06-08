@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const shelljs = require('shelljs');
 const WEB_PATH = './web/source';
-const WEB_GIT_URL = 'https://github.com/J-DaYu/notes.git';
+const WEB_GIT_URL = 'https://github.com/J-DaYu/likedev.me-web.git';
 
 module.exports = function () {
   // 检查 web 目录

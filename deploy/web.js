@@ -12,9 +12,9 @@ module.exports = function () {
     console.log(`更新 ${WEB_PATH} 代码...`);
     shelljs.exec(`cd ${WEB_PATH} && git pull`);
   }
-  // npm i
-  // npm run build
+
   shelljs.cd(WEB_PATH);
+  shelljs.exec('sudo su');
   shelljs.exec('npm i');
   shelljs.exec('npm run build');
 

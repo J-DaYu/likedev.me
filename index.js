@@ -8,7 +8,7 @@ const bodyParser = require('koa-bodyparser');
 const bufferEq = require('buffer-equal-constant-time');
 
 const HOOK_CONFIG = require('./hook.config');
-const PORT = 3000;
+const PORT = 80;
 const WEB_PATH = './web/source';
 
 function sign (secret, data) {
@@ -52,6 +52,7 @@ router.get('*', (ctx, next) => {
   ctx.body = 'Hello Koa2!';
 });
 
+app.use(staticServer('./web/docs'), 'docs');
 app.use(staticServer('./web/source/dist'));
 app.use(router.middleware());
 app.use(deploy.middleware());

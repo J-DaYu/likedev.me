@@ -12,12 +12,12 @@ const PORT = 3000;
 const WEB_PATH = './web/source';
 const crypto = require('crypto');
 
-function sign (data) {
-  return 'sha1=' + crypto.createHmac('sha1', HOOK_CONFIG.doc_hook_secret).update(data).digest('hex')
+function sign (secret, data) {
+  return 'sha1=' + crypto.createHmac('sha1', secret).update(data).digest('hex')
 }
 
-function verify (signature, data) {
-  return bufferEq(Buffer.from(signature), Buffer.from(sign(data)))
+function verify (signature, secret, data) {
+  return bufferEq(Buffer.from(signature), Buffer.from(sign(secret, data)))
 }
 
 let app = new Koa();
@@ -26,8 +26,7 @@ app.use(bodyParser());
 // router
 let router = Router().loadMethods();
 router.get('*', (ctx, next) => {
-  // ctx.body = fs.readFileSync('./web/source/dist/index.html', 'utf-8');
-  ctx.body = 'Hello Koa!';
+  ctx.body = 'Hello Koa2!';
 });
 
 // TODO 自动化脚本 / 更新 web 源码 / 编译源码 /更新 docs 文档
@@ -36,7 +35,7 @@ deploy.post('/doc', (ctx, next) => {
   let signature = ctx.headers['x-hub-signature'];
   if (!signature) {
     ctx.body = 'x-hub-signature 必须传入';
-  } else if (!verify(signature, ctx.request.rawBody)) {
+  } else if (!verify(signature, HOOK_CONFIG.doc_hook_secret, ctx.request.rawBody)) {
     ctx.body = `signature 不匹配: ${signature}`;
   } else {
     let doc = require('./deploy/doc');
@@ -47,7 +46,7 @@ deploy.post('/web', (ctx, next) => {
   let signature = ctx.headers['x-hub-signature'];
   if (!signature) {
     ctx.body = 'x-hub-signature 必须传入';
-  } else if (!verify(signature, ctx.request.rawBody)) {
+  } else if (!verify(signature, HOOK_CONFIG.web_hook_secret, ctx.request.rawBody)) {
     ctx.body = `signature 不匹配: ${signature}`;
   } else {
     let web = require('./deploy/web');
